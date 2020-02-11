@@ -1,0 +1,12 @@
+.DS_Store
+node_modules
+.ad-spring-cloud.imi
+# Editor directories and files
+.idea
+.git
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
