@@ -12,5 +12,4 @@ public class AdException extends Exception{
         super(message);
     }
 
-
 }

@@ -45,7 +45,7 @@ public class CommonResponseDataAdvice implements ResponseBodyAdvice<Object> {
                                   Class<? extends HttpMessageConverter<?>> aClass,
                                   ServerHttpRequest serverHttpRequest,
                                   ServerHttpResponse serverHttpResponse) {
-        CommonResponse<Object> response = new CommonResponse<>(0,"");
+        CommonResponse<Object> response = new CommonResponse<>(0, "");
         if (null == o) {
             return response;
         } else if (o instanceof CommonResponse) {
