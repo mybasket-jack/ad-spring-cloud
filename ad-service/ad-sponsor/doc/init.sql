@@ -68,6 +68,14 @@ CREATE TABLE `creative_unit` (
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COMMENT='创意和推广单元关联表';
 
+-- 推广单元关键词 Feature
+CREATE TABLE `ad_unit_keyword` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `unit_id` int(11) NOT NULL COMMENT '推广单元 id',
+    `keyword` varchar(30) NOT NULL COMMENT '关键词',
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COMMENT='推广单元关键词 Feature'
+
 -- 推广单元兴趣 Feature
 CREATE TABLE `ad_unit_it` (
     `id` int(11) NOT NULL AUTO_INCREMENT,

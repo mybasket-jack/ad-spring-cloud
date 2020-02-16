@@ -1,0 +1,115 @@
+package com.jack006.ad.index;
+
+import com.alibaba.fastjson.JSON;
+import com.jack006.ad.dump.DConstant;
+import com.jack006.ad.dump.table.*;
+import com.jack006.ad.handler.AdLevelDataHandler;
+import com.jack006.ad.mysql.constant.OpType;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * TODO
+ *
+ * @Author jack
+ * @Since 1.0 2020/2/16 21:26
+ */
+@Component
+@DependsOn("dataTable")
+public class IndexFileLoader {
+
+    /**
+     * 全量索引初始加载
+     */
+    @PostConstruct
+    public void init() {
+        // 先加载第二层 再 第三层 再第四层
+        // 加载第一层
+        List<String> adPlanStrings = loadDumpData(
+                String.format("%s%s",
+                        DConstant.DATA_ROOT_DIR,
+                        DConstant.AD_PLAN)
+        );
+        adPlanStrings.forEach(p -> AdLevelDataHandler.handleLevel2(
+                JSON.parseObject(p, AdPlanTable.class),
+                OpType.ADD
+        ));
+        List<String> adCreativeStrings = loadDumpData(
+                String.format("%s%s",
+                        DConstant.DATA_ROOT_DIR,
+                        DConstant.AD_CREATIVE)
+        );
+        adCreativeStrings.forEach(p -> AdLevelDataHandler.handleLevel2(
+                JSON.parseObject(p, AdCreativeTable.class),
+                OpType.ADD
+        ));
+
+        /*第三层加载*/
+        List<String> adUnitStrings =loadDumpData(
+                String.format("%s%s",
+                        DConstant.DATA_ROOT_DIR,
+                        DConstant.AD_UNIT)
+        );
+        adUnitStrings.forEach(u -> AdLevelDataHandler.handleLevel3(
+                JSON.parseObject(u, AdUnitTable.class),
+                OpType.ADD
+        ));
+
+        List<String> adCreativeUnitStrings =loadDumpData(
+                String.format("%s%s",
+                        DConstant.DATA_ROOT_DIR,
+                        DConstant.AD_CREATIVE_UNIT)
+        );
+        adCreativeUnitStrings.forEach(cu -> AdLevelDataHandler.handleLevel3(
+                JSON.parseObject(cu, AdCreativeUnitTable.class),
+                OpType.ADD
+        ));
+        /*第四层加载*/
+        // 关键词
+        List<String> adUnitKeywordStrings =loadDumpData(
+                String.format("%s%s",
+                        DConstant.DATA_ROOT_DIR,
+                        DConstant.AD_UNIT_KEYWORD)
+        );
+        adUnitKeywordStrings.forEach(cu -> AdLevelDataHandler.handleLevel4(
+                JSON.parseObject(cu, AdUnitKeywordTable.class),
+                OpType.ADD
+        ));
+        // 兴趣
+        List<String> adUnitItStrings =loadDumpData(
+                String.format("%s%s",
+                        DConstant.DATA_ROOT_DIR,
+                        DConstant.AD_UNIT_IT)
+        );
+        adUnitItStrings.forEach(cu -> AdLevelDataHandler.handleLevel4(
+                JSON.parseObject(cu, AdUnitItTable.class),
+                OpType.ADD
+        ));
+        // 地域
+        List<String> adUnitDistrictStrings =loadDumpData(
+                String.format("%s%s",
+                        DConstant.DATA_ROOT_DIR,
+                        DConstant.AD_UNIT_DISTRICT)
+        );
+        adUnitDistrictStrings.forEach(cu -> AdLevelDataHandler.handleLevel4(
+                JSON.parseObject(cu, AdUnitDistrictTable.class),
+                OpType.ADD
+        ));
+    }
+
+    private List<String> loadDumpData(String fileName) {
+        try (BufferedReader br = Files.newBufferedReader(Paths.get(fileName))){
+            return br.lines().collect(Collectors.toList());
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+}
