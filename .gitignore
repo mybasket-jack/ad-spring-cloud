@@ -1,8 +1,8 @@
 .DS_Store
-node_modules
-/ad-eureka/target/
-/ad-gateway/target/
-*.ad-spring-cloud.imi
+target
+.classpath
+.project
+*.imi
 # Editor directories and files
 .idea
 .git
